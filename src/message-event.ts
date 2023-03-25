@@ -46,6 +46,11 @@ export interface MessageEvent {
     id: string;
 
     /**
+     * Parent message, meaning the reply message
+     */
+    parentMessage: string | undefined;
+
+    /**
      * Message event content,
      * different messageType content is not the same
      */
