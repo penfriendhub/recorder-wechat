@@ -1,14 +1,17 @@
 import {Contact, Message} from "wechaty";
 import {RoomInterface} from "wechaty/src/user-modules/room";
-import {MessageEvent} from "./message-event";
+import {MessageEvent, messageType} from "./message-event";
 
 async function message2MessageEvent (msg: Message): Promise<MessageEvent> {
+    const room = msg.room();
     return {
         id: msg.id,
         timestamp: msg.date().getTime(),
         message: msg.text(),
+        messageType: await messageType(msg.type()),
         userId: msg.talker().id,
-        userName: msg.talker().name()
+        userName: room ? (await room.alias(msg.talker()) || msg.talker().name()) : msg.talker().name(),
+        chatId: room ? room.id : "P2P"
     };
 }
 

@@ -29,7 +29,18 @@ function initRedisClient(): RedisClientType {
 }
 
 async function redisPush (client: RedisClientType, message: MessageEvent) {
-    client.lPush("record", JSON.stringify(message));
+    client.lPush(`recorder-${message.chatId}`, JSON.stringify(message));
+}
+
+async function validate (client: RedisClientType, key: string) {
+    try {
+        const value = await client.get(key);
+        return value ? false : true;
+    } catch (error) { 
+        await client.set(key, "1");
+        await client.expire(key, 60*60);
+        return true;
+    }
 }
   
 class RedisClientClass {
@@ -46,5 +57,6 @@ class RedisClientClass {
 
 export {
     RedisClientClass,
-    redisPush
+    redisPush,
+    validate
 }

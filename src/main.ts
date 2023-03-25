@@ -1,12 +1,14 @@
 // @ts-ignore
 import QRCode from "qrcode";
 import {Contact, Message, ScanStatus, WechatyBuilder} from "wechaty";
-import {RedisClientClass, redisPush} from "./redis-handler";
+import {RedisClientClass, redisPush, validate} from "./redis-handler";
 import {reply, message2MessageEvent} from "./wechat-handler";
 
 async function handler(message: Message) {
-    await reply(message);
-    await redisPush(redisClient, await message2MessageEvent(message));
+    if (await validate(redisClient, message.id)) {
+        await reply(message);
+        await redisPush(redisClient, await message2MessageEvent(message));
+    }
 }
 
 async function onScan(qrcode: string, status: ScanStatus) {
@@ -26,7 +28,7 @@ async function onLogout(user: Contact) {
     console.log(`Goodbye, ${user.name()}`);
 }
 async function onMessage(message: Message) {
-    if ( message.self() || message.type() !== bot.Message.Type.Text ) {
+    if ( message.self() || !message.room() ) {
         return;
     }
     await handler(message);
