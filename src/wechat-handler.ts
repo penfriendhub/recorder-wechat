@@ -11,7 +11,8 @@ async function message2MessageEvent (msg: Message): Promise<MessageEvent> {
         messageType: await messageType(msg.type()),
         userId: msg.talker().id,
         userName: room ? (await room.alias(msg.talker()) || msg.talker().name()) : msg.talker().name(),
-        chatId: room ? room.id : "P2P"
+        chatId: room ? room.id : `P2P-${msg.talker().id}`,
+        chatType: room ? "group" : "p2p"
     };
 }
 

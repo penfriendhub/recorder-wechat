@@ -40,11 +40,45 @@ export async function messageType (type: PUPPET.types.Message): Promise<string> 
 }
 
 export interface MessageEvent {
+    /**
+     * Message event ID, mainly messageId
+     */
     id: string;
+
+    /**
+     * Message event content,
+     * different messageType content is not the same
+     */
     message: string;
+
+    /**
+     * Message event content type, e.g. Text Post Image etc.
+     * @see messageType
+     */
     messageType: string;
+
+    /**
+     * User ID
+     */
     userId: string;
+
+    /**
+     * User name. Alias if in a group chat
+     */
     userName: string;
+
+    /**
+     * Chat Room ID
+     */
     chatId: string;
+
+    /**
+     * Chat types, P2P and group
+     */
+    chatType: string;
+
+    /**
+     * Timestamp of message event creation
+     */
     timestamp: number;
 }

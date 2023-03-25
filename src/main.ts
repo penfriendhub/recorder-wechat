@@ -1,16 +1,24 @@
 // @ts-ignore
 import QRCode from "qrcode";
 import {Contact, Message, ScanStatus, WechatyBuilder} from "wechaty";
-import {RedisClientClass, redisPush, validate} from "./redis-handler";
+import {RedisClientClass, redisPush, isVisited} from "./redis-handler";
 import {reply, message2MessageEvent} from "./wechat-handler";
 
+/**
+ * Message event core handler, 
+ * plus the need to avoid messages being triggered repeatedly
+ * @param message message body
+ */
 async function handler(message: Message) {
-    if (await validate(redisClient, message.id)) {
+    if (await isVisited(redisClient, message.id)) {
         await reply(message);
         await redisPush(redisClient, await message2MessageEvent(message));
     }
 }
 
+/**
+ * Scan code to login
+ */
 async function onScan(qrcode: string, status: ScanStatus) {
     const qrcodeImageUrl = [
       'https://api.qrserver.com/v1/create-qr-code/?data=',
@@ -21,12 +29,25 @@ async function onScan(qrcode: string, status: ScanStatus) {
         await QRCode.toString(qrcode, { type: "terminal", small: true })
     );
 }
+
+/**
+ * Log in wechat
+ */
 async function onLogin(user: Contact) {
     console.log(`Hello, ${user.name()}`);
 }
+
+/**
+ * Log out wechat
+ */
 async function onLogout(user: Contact) {
     console.log(`Goodbye, ${user.name()}`);
 }
+
+/**
+ * Group chat messages will be listened to, 
+ * single chat messages will not.
+ */
 async function onMessage(message: Message) {
     if ( message.self() || !message.room() ) {
         return;
