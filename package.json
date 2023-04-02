@@ -33,7 +33,7 @@
     "nodemon": "^2.0.22",
     "raven": "^2.6.4",
     "ts-node": "^10.9.1",
-    "type-fest": "^3.7.1",
+    "type-fest": "^3.7.2",
     "typescript": "^5.0.2"
   },
   "engines": {
