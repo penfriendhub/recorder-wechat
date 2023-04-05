@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/penfriendhub/recorder-wechat#readme",
   "dependencies": {
-    "axios": "^1.3.4",
+    "axios": "^1.3.5",
     "dotenv": "^16.0.3",
     "qrcode": "^1.5.1",
     "redis": "^4.6.5",
